@@ -24,7 +24,7 @@ public class DataSeeder
         var adminUser = new ApplicationUser(Guid.NewGuid(), "Admin", "admin@admin.com", "admin123",
             new List<ApplicationRole> { adminRole }, Array.Empty<string>());
         var userUser = new ApplicationUser(Guid.NewGuid(), "User", "user@user.com", "user123",
-            new List<ApplicationRole> { adminRole }, Array.Empty<string>());
+            new List<ApplicationRole> { userRole }, Array.Empty<string>());
 
         _dbContext.Roles.Add(adminRole);
         _dbContext.Roles.Add(userRole);
