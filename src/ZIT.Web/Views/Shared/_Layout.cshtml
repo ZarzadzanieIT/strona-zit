@@ -39,7 +39,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
                             </li>
                             <li>
-                                <p>Hello @User.Claims.First(x => x.Type == ClaimTypes.Name).Value!</p>
+                                <span class="nav-link text-dark">Hello @User.Claims.First(x => x.Type == ClaimTypes.Name).Value!</span>
                             </li>
                         }
                         else
