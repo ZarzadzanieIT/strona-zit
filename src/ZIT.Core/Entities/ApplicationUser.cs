@@ -15,8 +15,8 @@ public class ApplicationUser : AuditableEntity
         Name = name;
         Email = email;
         Password = password;
-        Entitlements = Array.Empty<string>();
-        Roles = Array.Empty<ApplicationRole>();
+        Entitlements = new List<string>();
+        Roles = new List<ApplicationRole>();
     }
 
     public ApplicationUser(Guid id, string name, string email, string password, ICollection<ApplicationRole> roles,

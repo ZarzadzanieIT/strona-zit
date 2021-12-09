@@ -11,7 +11,7 @@ public class ApplicationRole : AuditableEntity
     {
         Id = id;
         Name = name;
-        Entitlements = Array.Empty<string>();
+        Entitlements = new List<string>();
     }
 
     public ApplicationRole(Guid id, string name, ICollection<string> entitlements)
