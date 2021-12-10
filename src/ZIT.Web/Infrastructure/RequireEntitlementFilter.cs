@@ -6,7 +6,7 @@ namespace ZIT.Web.Infrastructure;
 
 public class RequireEntitlementFilter : IAuthorizationFilter
 {
-    readonly Claim _claim;
+    private readonly Claim _claim;
 
     public RequireEntitlementFilter(Claim claim)
     {
