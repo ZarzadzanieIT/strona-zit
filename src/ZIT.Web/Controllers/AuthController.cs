@@ -29,8 +29,8 @@ public class AuthController : Controller
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginDto dto)
     {
-        var user = await _authService.GetByEmail(dto.Email);
-        if (user == null || !user.Password.Equals(dto.Password))
+        var user = await _authService.LoginAsync(dto);
+        if (user == null)
         {
             return View(new LoginDto
             {
