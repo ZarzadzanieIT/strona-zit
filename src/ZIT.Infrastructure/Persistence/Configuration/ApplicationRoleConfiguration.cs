@@ -13,5 +13,11 @@ public class ApplicationRoleConfiguration : IEntityTypeConfiguration<Application
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+        builder.HasMany<ApplicationUser>(e => e.UsersInRole)
+            .WithMany(e => e.Roles);
+        builder.HasOne<ApplicationRole>(x => x.ParentRole)
+            .WithMany(x => x.ChildrenRoles)
+            .HasForeignKey(x => x.ParentRoleId);
     }
 }

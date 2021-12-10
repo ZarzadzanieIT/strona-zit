@@ -9,6 +9,7 @@ public class Auth
 
     public class Entitlements
     {
+        public const string Default = "ZIT-DefaultEntitlement";
         public const string Panel = "ZIT-PanelEntitlement";
 
         public class Users
@@ -18,7 +19,5 @@ public class Auth
             public const string Write = "ZIT-UsersEntitlement.Write";
 
         }
-        //public const string Users = "ZIT-UsersEntitlement";
-        //public const string UsersWrite = "ZIT-UsersEntitlement.Write";
     }
 }

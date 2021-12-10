@@ -5,5 +5,5 @@ namespace ZIT.Core.Services;
 
 public interface IAuthService
 {
-    Task<ApplicationUser?> LoginAsync(LoginDto loginDto);
+    Task<UserDto?> LoginAsync(LoginDto loginDto);
 }

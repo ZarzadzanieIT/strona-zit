@@ -10,19 +10,18 @@ public class ApplicationUser : AuditableEntity
     public ICollection<string> Entitlements { get; set; }
     public ICollection<ApplicationRole> Roles { get; set; }
 
-    public ApplicationUser(string name, string email, string password)
+    public IEnumerable<string> AllEntitlements
+        => Roles.SelectMany(x => x.AllEntitlements)
+            .Concat(Entitlements)
+            .Distinct();
+
+    protected ApplicationUser()
     {
-        Name = name;
-        Email = email;
-        Password = password;
-        Entitlements = new List<string>();
-        Roles = new List<ApplicationRole>();
     }
 
-    public ApplicationUser(Guid id, string name, string email, string password, ICollection<ApplicationRole> roles,
+    public ApplicationUser(string name, string email, string password, ICollection<ApplicationRole> roles,
         ICollection<string> entitlements)
     {
-        Id = id;
         Name = name;
         Email = email;
         Password = password;
@@ -30,6 +29,14 @@ public class ApplicationUser : AuditableEntity
         Roles = roles;
     }
 
-    public IEnumerable<string> GetAllEntitlements()
-        => Roles.SelectMany(x => x.Entitlements).Concat(Entitlements);
+    public void AddRole(ApplicationRole role)
+    {
+        if (Roles.Contains(role))
+        {
+            return;
+        }
+
+        Roles.Add(role);
+        role.AddUserToRole(this);
+    }
 }

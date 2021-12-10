@@ -7,6 +7,6 @@ public class RequireOneEntitlementAttribute : TypeFilterAttribute
 {
     public RequireOneEntitlementAttribute(string claimType, params string[] claimValues) : base(typeof(RequireOneEntitlementFilter))
     {
-        Arguments = claimValues.Select(x => new Claim(claimType, x)).ToArray();
+        Arguments = new object[] { claimValues.Select(x => new Claim(claimType, x)).ToArray() };
     }
 }

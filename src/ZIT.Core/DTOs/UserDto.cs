@@ -7,4 +7,6 @@ public class UserDto
     public string Email { get; set; }
     public List<string> Roles { get; set; }
     public List<string> Entitlements { get; set; }
+    public List<string> AllEntitlements { get; set; }
+
 }

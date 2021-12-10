@@ -13,5 +13,7 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+        builder.HasMany<ApplicationRole>(e => e.Roles).WithMany(e => e.UsersInRole);
     }
 }

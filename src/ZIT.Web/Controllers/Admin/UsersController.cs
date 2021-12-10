@@ -6,8 +6,8 @@ using ZIT.Web.Infrastructure;
 
 namespace ZIT.Web.Controllers.Admin;
 
-//[RequireEntitlement(Auth.Claim.Type, Auth.Entitlements.Users)]
 [RequireOneEntitlement(Auth.Claim.Type, Auth.Entitlements.Users.All, Auth.Entitlements.Users.Read)]
+[Route("panel/[controller]")]
 public class UsersController : Controller
 {
     private readonly IUserService _userService;

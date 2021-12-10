@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ZIT.Core.DTOs;
 using ZIT.Core.Entities;
 using ZIT.Infrastructure.Authorization;
 
@@ -7,19 +8,17 @@ namespace ZIT.Web.Infrastructure;
 
 public static class UserExtensions
 {
-    public static ClaimsPrincipal ToClaimsPrincipal(this ApplicationUser user)
+    public static ClaimsPrincipal ToClaimsPrincipal(this UserDto userDto)
     {
         var claims = new List<Claim>
         {
-            //new(CustomClaimTypes.UserId, user.Id.ToString()),
-            //new(CustomClaimTypes.CreatedAt, user.CreatedAt.ToString("d")),
-            new(ClaimTypes.Name, user.Name),
-            new(ClaimTypes.Email, user.Email)
-            //new(ClaimTypes.Role, user.Role)
+            new(ClaimTypes.Name, userDto.Name),
+            new(ClaimTypes.Email, userDto.Email)
 
         };
 
-        claims.AddRange(user.GetAllEntitlements().Select(x => new Claim(Auth.Claim.Type, x)));
+        claims.AddRange(userDto.Roles.Select(x => new Claim(ClaimTypes.Role, x)));
+        claims.AddRange(userDto.AllEntitlements.Select(x => new Claim(Auth.Claim.Type, x)));
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
