@@ -12,13 +12,13 @@ public static class UserExtensions
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Name, userDto.Name),
-            new(ClaimTypes.Email, userDto.Email)
+            new(ClaimTypes.Name, userDto.Name!),
+            new(ClaimTypes.Email, userDto.Email!)
 
         };
 
-        claims.AddRange(userDto.Roles.Select(x => new Claim(ClaimTypes.Role, x)));
-        claims.AddRange(userDto.AllEntitlements.Select(x => new Claim(Auth.Claim.Type, x)));
+        claims.AddRange(userDto.Roles?.Select(x => new Claim(ClaimTypes.Role, x!)) ?? Array.Empty<Claim>());
+        claims.AddRange(userDto.AllEntitlements?.Select(x => new Claim(Auth.Claim.Type, x)) ?? Array.Empty<Claim>());
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);

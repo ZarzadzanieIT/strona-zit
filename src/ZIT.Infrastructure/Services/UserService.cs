@@ -16,17 +16,17 @@ public class UserService : IAuthService, IUserService
         _dbContext = dbContext;
     }
 
-    private async Task<(List<ApplicationRole> roles, List<string> entitlements)> GetAuthorizationProps(
-        List<string> roleNames, List<string> entitlements)
+    private async Task<(List<ApplicationRole> roles, List<string>? entitlements)> GetAuthorizationProps(
+        List<string>? roleNames, List<string>? entitlements)
     {
-        var roleNamesInvariant = roleNames
-            .Select(x => x.ToLowerInvariant()).ToHashSet();
+        var roleNamesInvariant = roleNames?
+            .Select(x => x.ToLowerInvariant()).ToHashSet() ?? new HashSet<string>();
         var roles = await _dbContext.Roles
             .Where(x => roleNamesInvariant
-                .Contains(x.Name.ToLowerInvariant()))
+                .Contains(x.Name!.ToLowerInvariant()))
             .ToListAsync();
         var userSpecificEntitlements =
-            entitlements
+            entitlements?
                 .Except(roles
                     .SelectMany(x => x.AllEntitlements))
                 .ToList();
@@ -48,7 +48,7 @@ public class UserService : IAuthService, IUserService
     public async Task<UserDto?> GetAsync(Guid id)
     {
         var user = await _dbContext.Users
-            .Include(x => x.Roles)
+            .Include(x => x.Roles)!
             .ThenInclude(x => x.ChildrenRoles
             )
             .SingleOrDefaultAsync(x => x.Id == id);
@@ -60,8 +60,13 @@ public class UserService : IAuthService, IUserService
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Roles = user.Roles.Select(x => x.Name).ToList(),
-                Entitlements = user.Entitlements.Concat(user.Roles.SelectMany(x => x.Entitlements)).Distinct().ToList(),
+                Roles = user.Roles?.Select(x => x.Name).ToList(),
+                Entitlements = user.Entitlements
+                    ?.Concat(user.Roles
+                        ?.Where(x => x.Entitlements != null)
+                        .SelectMany(x => x.Entitlements!) ?? Array.Empty<string>())
+                    .Distinct()
+                    .ToList(),
                 AllEntitlements = user.AllEntitlements.ToList()
             },
             _ => null
@@ -71,7 +76,7 @@ public class UserService : IAuthService, IUserService
     public async Task<IEnumerable<UserDto>> GetAllAsync()
     {
         var users = await _dbContext.Users
-            .Include(x => x.Roles)
+            .Include(x => x.Roles)!
             .ThenInclude(x => x.ChildrenRoles)
             .ToListAsync();
 
@@ -80,8 +85,13 @@ public class UserService : IAuthService, IUserService
             Id = x.Id,
             Name = x.Name,
             Email = x.Email,
-            Roles = x.Roles.Select(x => x.Name).ToList(),
-            Entitlements = x.Entitlements.Concat(x.Roles.SelectMany(x => x.Entitlements)).Distinct().ToList(),
+            Roles = x.Roles?.Select(x => x.Name).ToList(),
+            Entitlements = x.Entitlements
+                ?.Concat(x.Roles
+                    ?.Where(x => x.Entitlements != null)
+                    .SelectMany(x => x.Entitlements!) ?? Array.Empty<string>())
+                .Distinct()
+                .ToList(),
             AllEntitlements = x.AllEntitlements.ToList()
         });
     }
@@ -89,10 +99,10 @@ public class UserService : IAuthService, IUserService
     public async Task<UserDto?> LoginAsync(LoginDto loginDto)
     {
         var user = await _dbContext.Users
-            .Include(x => x.Roles)
+            .Include(x => x.Roles)!
             .ThenInclude(x => x.ChildrenRoles
             )
-            .SingleOrDefaultAsync(x => x.Email.Equals(loginDto.Email, StringComparison.InvariantCultureIgnoreCase));
+            .SingleOrDefaultAsync(x => x.Email!.Equals(loginDto.Email, StringComparison.InvariantCultureIgnoreCase));
 
         return user switch
         {
@@ -101,8 +111,13 @@ public class UserService : IAuthService, IUserService
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Roles = user.Roles.Select(x => x.Name).ToList(),
-                Entitlements = user.Entitlements.Concat(user.Roles.SelectMany(x => x.Entitlements)).Distinct().ToList(),
+                Roles = user.Roles?.Select(x => x.Name).ToList(),
+                Entitlements = user.Entitlements
+                    ?.Concat(user.Roles
+                        ?.Where(x => x.Entitlements != null)
+                        .SelectMany(x => x.Entitlements!) ?? Array.Empty<string>())
+                    .Distinct()
+                    .ToList(),
                 AllEntitlements = user.AllEntitlements.ToList()
             },
             _ => null

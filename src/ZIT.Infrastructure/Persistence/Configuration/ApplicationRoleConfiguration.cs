@@ -11,7 +11,7 @@ public class ApplicationRoleConfiguration : IEntityTypeConfiguration<Application
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Entitlements)
             .HasConversion(
-                v => string.Join(',', v),
+                v => string.Join(',', v!),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
         builder.HasMany<ApplicationUser>(e => e.UsersInRole)

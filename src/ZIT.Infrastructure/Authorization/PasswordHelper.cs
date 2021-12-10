@@ -5,7 +5,7 @@ namespace ZIT.Infrastructure.Authorization;
 
 public class PasswordHelper
 {
-    public static string CalculateHash(string input)
+    public static string? CalculateHash(string? input)
     {
         if (!string.IsNullOrWhiteSpace(input))
         {
@@ -31,7 +31,7 @@ public class PasswordHelper
         return salt;
     }
 
-    public static bool CheckMatch(string hash, string input)
+    public static bool CheckMatch(string? hash, string? input)
     {
         try
         {
