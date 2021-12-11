@@ -5,12 +5,14 @@
                 <div class="col-xl-5 col-md-8">
                     <form class="bg-white  rounded-5 shadow-5-strong p-5" method="post" asp-action="Login" asp-all-route-data="@(new Dictionary<string, string> { {"returnUrl",Context.Request.Query["returnUrl"]} })">
                         <!-- Email input -->
+                        <span class="text-danger" asp-validation-for="Email"></span>
                         <div class="form-outline mb-4">
                             <input type="email" id="form1Example1" class="form-control" asp-for="Email" placeholder="@Model!.Email"/>
                             <label class="form-label" for="form1Example1">Email address</label>
                         </div>
 
                         <!-- Password input -->
+                        <span class="text-danger" asp-validation-for="Password"></span>
                         <div class="form-outline mb-4">
                             <input type="password" id="form1Example2" class="form-control" asp-for="Password"/>
                             <label class="form-label" for="form1Example2">Password</label>

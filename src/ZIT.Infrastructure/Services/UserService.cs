@@ -69,6 +69,52 @@ public class UserService : IAuthService, IUserService
         };
     }
 
+    public async Task<UserDto?> GetByEmailAsync(string email)
+    {
+        var user = await _dbContext.Users
+            .Include(x => x.Roles)!
+            .ThenInclude(x => x.ChildrenRoles
+            )
+            .SingleOrDefaultAsync(x => x.Email!.Equals(email, StringComparison.InvariantCultureIgnoreCase));
+
+        return user switch
+        {
+            { } => new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Roles = user.Roles?.Select(x => x.Name).ToList(),
+                Entitlements = user.Entitlements!.ToList(),
+                AllEntitlements = user.AllEntitlements.ToList()
+            },
+            _ => null
+        };
+    }
+
+    public async Task<UserDto?> GetByNameAsync(string name)
+    {
+        var user = await _dbContext.Users
+            .Include(x => x.Roles)!
+            .ThenInclude(x => x.ChildrenRoles
+            )
+            .SingleOrDefaultAsync(x => x.Name!.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+
+        return user switch
+        {
+            { } => new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Roles = user.Roles?.Select(x => x.Name).ToList(),
+                Entitlements = user.Entitlements!.ToList(),
+                AllEntitlements = user.AllEntitlements.ToList()
+            },
+            _ => null
+        };
+    }
+
     public async Task<IEnumerable<UserDto>> GetAllAsync()
     {
         var users = await _dbContext.Users

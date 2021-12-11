@@ -27,7 +27,14 @@ public class AuthController : Controller
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginDto dto, [FromQuery] string returnUrl)
     {
-        var query = Request.QueryString.Value;
+        if (!ModelState.IsValid)
+        {
+            return View(new LoginDto
+            {
+                Email = dto.Email
+            });
+        }
+
         var user = await _authService.LoginAsync(dto);
         if (user == null)
         {

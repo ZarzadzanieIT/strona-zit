@@ -13,6 +13,11 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Api\Admin\" />
+    <Folder Include="Validation\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.5" />
   </ItemGroup>
 
 </Project>
