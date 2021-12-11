@@ -16,6 +16,8 @@ public static class InfrastructureInstaller
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthService>(provider => (provider.GetRequiredService<IUserService>() as IAuthService)!);
 
+        var entitlementsProvider = new EntitlementsProvider();
+        services.AddSingleton<IEntitlementsProvider>(entitlementsProvider);
         services.AddTransient<DataSeeder>();
 
         return services;
