@@ -1,8 +1,9 @@
-﻿using ZIT.Core.Entities;
+﻿using ZIT.Core.DTOs;
+using ZIT.Core.Entities;
 
 namespace ZIT.Core.Services;
 
 public interface IAuthService
 {
-    Task<ApplicationUser?> GetByEmail(string email);
+    Task<ApplicationResult<UserDto?>> LoginAsync(LoginDto loginDto);
 }

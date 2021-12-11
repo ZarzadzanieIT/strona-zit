@@ -13,7 +13,8 @@ public static class InfrastructureInstaller
         services.AddDbContext<AppDbContext>(builder =>
             builder.UseInMemoryDatabase("ZIT"));
 
-        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAuthService>(provider => (provider.GetRequiredService<IUserService>() as IAuthService)!);
 
         services.AddTransient<DataSeeder>();
 

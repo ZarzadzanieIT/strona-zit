@@ -6,7 +6,7 @@ namespace ZIT.Web.Infrastructure;
 
 public class RequireEntitlementFilter : IAuthorizationFilter
 {
-    readonly Claim _claim;
+    private readonly Claim _claim;
 
     public RequireEntitlementFilter(Claim claim)
     {
@@ -15,8 +15,8 @@ public class RequireEntitlementFilter : IAuthorizationFilter
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var hasClaim = context.HttpContext?.User?.Claims?.Any(c => c.Type == _claim.Type && c.Value == _claim.Value);
-        if (hasClaim == null || !hasClaim.Value)
+        var hasClaim = context.HttpContext?.User?.Claims?.Any(c => c.Type == _claim.Type && c.Value == _claim.Value) ?? false;
+        if (!hasClaim)
         {
             context.Result = new ForbidResult();
         }

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ZIT.Infrastructure.Authorization;
 using ZIT.Web.Infrastructure;
 
 namespace ZIT.Web.Controllers;
 
+[Authorize]
 [RequireEntitlement(Auth.Claim.Type, Auth.Entitlements.Panel)]
 public class PanelController : Controller
 {

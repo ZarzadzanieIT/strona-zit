@@ -1,6 +1,10 @@
+using System.Runtime.InteropServices.ComTypes;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ZIT.Infrastructure;
 using ZIT.Infrastructure.Persistence;
+using ZIT.Web.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +15,20 @@ services.AddInfrastructure();
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(x =>
     {
-        x.LoginPath = "/auth";
-        x.AccessDeniedPath = "/auth";
+        x.ReturnUrlParameter = "returnUrl";
+        x.LoginPath = "/login";
+        x.AccessDeniedPath = "/forbidden";
+        x.Events.OnRedirectToLogin = CookieHelpers.HandleRedirectBasedOnUrl();
+        x.Events.OnRedirectToAccessDenied = CookieHelpers.HandleRedirectBasedOnUrl();
     });
+services.AddFluentValidation(x =>
+{
+    x.ValidatorOptions.CascadeMode = CascadeMode.Stop;
+    x.LocalizationEnabled = false;
+    x.DisableDataAnnotationsValidation = true;
+    x.RegisterValidatorsFromAssemblyContaining<Program>();
+
+});
 
 var app = builder.Build();
 

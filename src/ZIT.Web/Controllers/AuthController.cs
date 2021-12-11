@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ZIT.Core.DTOs;
 using ZIT.Core.Services;
-using ZIT.Infrastructure.Persistence;
 using ZIT.Web.Infrastructure;
+using ZIT.Web.Models;
 
 namespace ZIT.Web.Controllers;
 
@@ -21,30 +20,49 @@ public class AuthController : Controller
     }
 
     [HttpGet("login")]
-    public IActionResult LoginAsync()
+    public IActionResult LoginAsync([FromQuery] string returnUrl)
     {
-        return View(new LoginDto());
+        return View(new LoginViewModel());
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginDto dto)
+    public async Task<IActionResult> LoginAsync(LoginViewModel vm, [FromQuery] string returnUrl)
     {
-        var user = await _authService.GetByEmail(dto.Email);
-        if (user == null || !user.Password.Equals(dto.Password))
+        if (!ModelState.IsValid)
         {
-            return View(new LoginDto
-            {
-                Email = dto.Email
-            });
+            vm.Login.Password = string.Empty;
+            return View(
+                vm
+            );
         }
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user.ToClaimsPrincipal(),
+        var result = await _authService.LoginAsync(vm.Login);
+
+        if (result.Failed)
+        {
+            return View(
+                new LoginViewModel(
+                    new LoginDto
+                    {
+                        Email = vm.Login.Email
+                    },
+                    result.Messages
+                )
+            );
+        }
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+            result.Value!.ToClaimsPrincipal(),
             new AuthenticationProperties
             {
                 IsPersistent = true
             });
 
-        return RedirectToAction("Index", "Home");
+        return returnUrl switch
+        {
+            var url when !string.IsNullOrWhiteSpace(url) => LocalRedirect(url),
+            _ => RedirectToAction("Index", "Home")
+        };
     }
 
     [Route("logout")]
@@ -53,5 +71,11 @@ public class AuthController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         return LocalRedirect("/");
+    }
+
+    [Route("forbidden")]
+    public async Task<IActionResult> ForbiddenAsync()
+    {
+        return View();
     }
 }

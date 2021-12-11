@@ -4,25 +4,25 @@ namespace ZIT.Core.Entities;
 
 public class ApplicationUser : AuditableEntity
 {
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public ICollection<string> Entitlements { get; set; }
-    public ICollection<ApplicationRole> Roles { get; set; }
+    public string? Name { get; set; }
+    public string? Email { get; set; }
+    public string? Password { get; set; }
+    public ICollection<string>? Entitlements { get; set; }
+    public ICollection<ApplicationRole>? Roles { get; set; }
 
-    public ApplicationUser(string name, string email, string password)
+    public IEnumerable<string> AllEntitlements
+        => (Roles ?? Array.Empty<ApplicationRole>())
+            .SelectMany(x => x.AllEntitlements)
+            .Concat(Entitlements ?? Array.Empty<string>())
+            .Distinct();
+
+    protected ApplicationUser()
     {
-        Name = name;
-        Email = email;
-        Password = password;
-        Entitlements = new List<string>();
-        Roles = new List<ApplicationRole>();
     }
 
-    public ApplicationUser(Guid id, string name, string email, string password, ICollection<ApplicationRole> roles,
-        ICollection<string> entitlements)
+    public ApplicationUser(string? name, string? email, string? password, ICollection<ApplicationRole>? roles,
+        ICollection<string>? entitlements)
     {
-        Id = id;
         Name = name;
         Email = email;
         Password = password;
@@ -30,6 +30,19 @@ public class ApplicationUser : AuditableEntity
         Roles = roles;
     }
 
-    public IEnumerable<string> GetAllEntitlements()
-        => Roles.SelectMany(x => x.Entitlements).Concat(Entitlements);
+    public void AddRole(ApplicationRole role)
+    {
+        if (Roles == null)
+        {
+            throw new NullReferenceException($"Can not role when {nameof(Roles)} is null");
+        }
+
+        if (Roles.Contains(role))
+        {
+            return;
+        }
+
+        Roles.Add(role);
+        role.AddUserToRole(this);
+    }
 }
