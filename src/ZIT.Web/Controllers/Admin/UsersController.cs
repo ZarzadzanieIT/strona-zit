@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ZIT.Core.DTOs;
 using ZIT.Core.Services;
 using ZIT.Infrastructure.Authorization;

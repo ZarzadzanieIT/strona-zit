@@ -15,9 +15,17 @@ public class RequireOneEntitlementFilter : IAuthorizationFilter
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
+        var isAuthenticated = context.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+        if (!isAuthenticated)
+        {
+            context.Result = new UnauthorizedResult();
+            return;
+        }
+
         var hasClaim =
-            context.HttpContext?.User?.Claims?.Any(x => _claims.Any(y => y.Type == x.Type && y.Value == x.Value));
-        if (hasClaim == null || !hasClaim.Value)
+            context.HttpContext?.User?.Claims?.Any(x => _claims.Any(y => y.Type == x.Type && y.Value == x.Value)) 
+            ?? false;
+        if (!hasClaim)
         {
             context.Result = new ForbidResult();
         }

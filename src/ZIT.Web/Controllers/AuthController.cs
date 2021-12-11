@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ZIT.Core.DTOs;
 using ZIT.Core.Services;
-using ZIT.Infrastructure.Persistence;
 using ZIT.Web.Infrastructure;
 
 namespace ZIT.Web.Controllers;
@@ -21,14 +19,15 @@ public class AuthController : Controller
     }
 
     [HttpGet("login")]
-    public IActionResult LoginAsync()
+    public IActionResult LoginAsync([FromQuery] string ReturnUrl)
     {
         return View(new LoginDto());
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginDto dto)
+    public async Task<IActionResult> LoginAsync(LoginDto dto, [FromQuery] string ReturnUrl)
     {
+        var query = Request.QueryString.Value;
         var user = await _authService.LoginAsync(dto);
         if (user == null)
         {
@@ -44,7 +43,12 @@ public class AuthController : Controller
                 IsPersistent = true
             });
 
-        return RedirectToAction("Index", "Home");
+        return ReturnUrl switch
+        {
+            var url when !string.IsNullOrWhiteSpace(url) => LocalRedirect(url),
+            _ => RedirectToAction("Index", "Home")
+
+        };
     }
 
     [Route("logout")]
@@ -53,5 +57,11 @@ public class AuthController : Controller
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         return LocalRedirect("/");
+    }
+
+    [Route("forbidden")]
+    public async Task<IActionResult> ForbiddenAsync()
+    {
+        return View();
     }
 }

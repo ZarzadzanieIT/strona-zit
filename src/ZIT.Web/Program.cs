@@ -1,6 +1,8 @@
+using System.Runtime.InteropServices.ComTypes;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ZIT.Infrastructure;
 using ZIT.Infrastructure.Persistence;
+using ZIT.Web.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +13,12 @@ services.AddInfrastructure();
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(x =>
     {
-        x.LoginPath = "/auth";
-        x.AccessDeniedPath = "/auth";
+        x.LoginPath = "/login";
+        x.AccessDeniedPath = "/forbidden";
+        x.Events.OnRedirectToLogin = CookieHelpers.HandleRedirectBasedOnUrl(401);
+        x.Events.OnRedirectToAccessDenied = CookieHelpers.HandleRedirectBasedOnUrl(403);
     });
+
 
 var app = builder.Build();
 
