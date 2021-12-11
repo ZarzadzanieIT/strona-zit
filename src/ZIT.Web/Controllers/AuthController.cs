@@ -19,13 +19,13 @@ public class AuthController : Controller
     }
 
     [HttpGet("login")]
-    public IActionResult LoginAsync([FromQuery] string ReturnUrl)
+    public IActionResult LoginAsync([FromQuery] string returnUrl)
     {
         return View(new LoginDto());
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginDto dto, [FromQuery] string ReturnUrl)
+    public async Task<IActionResult> LoginAsync(LoginDto dto, [FromQuery] string returnUrl)
     {
         var query = Request.QueryString.Value;
         var user = await _authService.LoginAsync(dto);
@@ -43,7 +43,7 @@ public class AuthController : Controller
                 IsPersistent = true
             });
 
-        return ReturnUrl switch
+        return returnUrl switch
         {
             var url when !string.IsNullOrWhiteSpace(url) => LocalRedirect(url),
             _ => RedirectToAction("Index", "Home")

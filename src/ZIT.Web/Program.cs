@@ -13,10 +13,11 @@ services.AddInfrastructure();
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(x =>
     {
+        x.ReturnUrlParameter = "returnUrl";
         x.LoginPath = "/login";
         x.AccessDeniedPath = "/forbidden";
-        x.Events.OnRedirectToLogin = CookieHelpers.HandleRedirectBasedOnUrl(401);
-        x.Events.OnRedirectToAccessDenied = CookieHelpers.HandleRedirectBasedOnUrl(403);
+        x.Events.OnRedirectToLogin = CookieHelpers.HandleRedirectBasedOnUrl();
+        x.Events.OnRedirectToAccessDenied = CookieHelpers.HandleRedirectBasedOnUrl();
     });
 
 

@@ -15,13 +15,6 @@ public class RequireEntitlementFilter : IAuthorizationFilter
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var isAuthenticated = context.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-        if (!isAuthenticated)
-        {
-            context.Result = new UnauthorizedResult();
-            return;
-        }
-
         var hasClaim = context.HttpContext?.User?.Claims?.Any(c => c.Type == _claim.Type && c.Value == _claim.Value) ?? false;
         if (!hasClaim)
         {

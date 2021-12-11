@@ -5,6 +5,7 @@ using ZIT.Web.Infrastructure;
 
 namespace ZIT.Web.Controllers;
 
+[Authorize]
 [RequireEntitlement(Auth.Claim.Type, Auth.Entitlements.Panel)]
 public class PanelController : Controller
 {
