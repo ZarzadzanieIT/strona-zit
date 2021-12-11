@@ -46,9 +46,13 @@ public class UsersController : Controller
     }
 
     [RequireOneEntitlement(Auth.Claim.Type, Auth.Entitlements.Users.All, Auth.Entitlements.Users.Write)]
-    [HttpPut]
-    public async Task<IActionResult> PutAsync(UpdateUserDto updateUserDto)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutAsync(Guid id, UpdateUserDto updateUserDto)
     {
+        if (id != updateUserDto.Id)
+        {
+            return BadRequest("User Id mismatch");
+        }
         await _userService.UpdateAsync(updateUserDto);
         return Ok();
     }
