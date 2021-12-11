@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ZIT.Core.DTOs;
 using ZIT.Core.Services;
 using ZIT.Web.Infrastructure;
+using ZIT.Web.Models;
 
 namespace ZIT.Web.Controllers;
 
@@ -21,30 +22,37 @@ public class AuthController : Controller
     [HttpGet("login")]
     public IActionResult LoginAsync([FromQuery] string returnUrl)
     {
-        return View(new LoginDto());
+        return View(new LoginViewModel());
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginDto dto, [FromQuery] string returnUrl)
+    public async Task<IActionResult> LoginAsync(LoginViewModel vm, [FromQuery] string returnUrl)
     {
         if (!ModelState.IsValid)
         {
-            return View(new LoginDto
-            {
-                Email = dto.Email
-            });
+            vm.Login.Password = string.Empty;
+            return View(
+                vm
+            );
         }
 
-        var user = await _authService.LoginAsync(dto);
-        if (user == null)
+        var result = await _authService.LoginAsync(vm.Login);
+
+        if (result.Failed)
         {
-            return View(new LoginDto
-            {
-                Email = dto.Email
-            });
+            return View(
+                new LoginViewModel(
+                    new LoginDto
+                    {
+                        Email = vm.Login.Email
+                    },
+                    result.Messages
+                )
+            );
         }
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user.ToClaimsPrincipal(),
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+            result.Value!.ToClaimsPrincipal(),
             new AuthenticationProperties
             {
                 IsPersistent = true
@@ -54,7 +62,6 @@ public class AuthController : Controller
         {
             var url when !string.IsNullOrWhiteSpace(url) => LocalRedirect(url),
             _ => RedirectToAction("Index", "Home")
-
         };
     }
 

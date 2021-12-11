@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Net;
+using Microsoft.EntityFrameworkCore;
 using ZIT.Core.DTOs;
 using ZIT.Core.Entities;
 using ZIT.Core.Services;
@@ -133,7 +134,7 @@ public class UserService : IAuthService, IUserService
         });
     }
 
-    public async Task<UserDto?> LoginAsync(LoginDto loginDto)
+    public async Task<ApplicationResult<UserDto?>> LoginAsync(LoginDto loginDto)
     {
         var user = await _dbContext.Users
             .Include(x => x.Roles)!
@@ -143,16 +144,17 @@ public class UserService : IAuthService, IUserService
 
         return user switch
         {
-            { } when PasswordHelper.CheckMatch(user.Password, loginDto.Password) => new UserDto
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Roles = user.Roles?.Select(x => x.Name).ToList(),
-                Entitlements = user.Entitlements!.ToList(),
-                AllEntitlements = user.AllEntitlements.ToList()
-            },
-            _ => null
+            { } when PasswordHelper.CheckMatch(user.Password, loginDto.Password) => ApplicationResult.Success(
+                new UserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Roles = user.Roles?.Select(x => x.Name).ToList(),
+                    Entitlements = user.Entitlements!.ToList(),
+                    AllEntitlements = user.AllEntitlements.ToList()
+                }, HttpStatusCode.OK),
+            _ => ApplicationResult.Fail<UserDto>(HttpStatusCode.BadRequest, "Invalid credentials")
         };
     }
 
