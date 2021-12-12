@@ -1,0 +1,15 @@
+﻿@model HallOfFameViewModel
+
+@{
+    ViewBag.Title = "Hall of Fame";
+    Layout = "_Layout";
+}
+
+<h2>Hall of Fame</h2>
+
+<ul>
+    @foreach (var contributor in @Model!.Contributors)
+    {
+        <li>@contributor</li>
+    }
+</ul>

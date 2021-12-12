@@ -23,6 +23,12 @@ namespace ZIT.Web.Controllers
             return View();
         }
 
+        [Route("hall-of-fame")]
+        public IActionResult HallOfFame()
+        {
+            return View(new HallOfFameViewModel());
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
