@@ -8,7 +8,8 @@ public class HallOfFameViewModel
     {
         Contributors = new []
         {
-            "Krzysztof Zajączkowski"
+            "Krzysztof Zajączkowski",
+            "Grzegorz Strelczuk"
         };
     }
 }
