@@ -9,7 +9,8 @@ public class HallOfFameViewModel
         Contributors = new []
         {
             "Krzysztof Zajączkowski",
-            "Grzegorz Strelczuk"
+            "Grzegorz Strelczuk",
+            "Dawid Szpyra"
         };
     }
 }
