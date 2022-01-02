@@ -15,10 +15,11 @@ public class Member : AuditableEntity
     {
     }
 
-    public Member(string name, string surname, string photoAddress, string description, Department? department = null)
+    public Member(string? name, string? surname, string? photoAddress, string? description, Department? department = null)
     {
         DepartmentId = department?.Id;
         Department = department;
+        department?.AddMember(this);
         Name = name;
         Surname = surname;
         PhotoAddress = photoAddress;

@@ -9,6 +9,7 @@ public class MemberConfiguration : IEntityTypeConfiguration<Member>
     public void Configure(EntityTypeBuilder<Member> builder)
     {
         builder.HasKey(e => e.Id);
-        builder.HasOne<Department>(e => e.Department).WithOne(e => e.Coordinator).HasForeignKey<Department>(e => e.CoordinatorId);
+        builder.HasOne<Department>(e => e.Department)
+            .WithMany(e => e.Members).IsRequired().HasForeignKey(e => e.DepartmentId);
     }
 }

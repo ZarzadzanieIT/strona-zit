@@ -11,8 +11,8 @@ using ZIT.Infrastructure.Persistence;
 namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211216215928_SQLite_InitialDomain")]
-    partial class SQLite_InitialDomain
+    [Migration("20220102231256_InitialDomain")]
+    partial class InitialDomain
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -154,6 +154,7 @@ namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("DepartmentId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -175,6 +176,8 @@ namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Members");
                 });
@@ -276,10 +279,21 @@ namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
             modelBuilder.Entity("ZIT.Core.Entities.Department", b =>
                 {
                     b.HasOne("ZIT.Core.Entities.Member", "Coordinator")
-                        .WithOne("Department")
+                        .WithOne()
                         .HasForeignKey("ZIT.Core.Entities.Department", "CoordinatorId");
 
                     b.Navigation("Coordinator");
+                });
+
+            modelBuilder.Entity("ZIT.Core.Entities.Member", b =>
+                {
+                    b.HasOne("ZIT.Core.Entities.Department", "Department")
+                        .WithMany("Members")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("ZIT.Core.Entities.ApplicationRole", b =>
@@ -287,9 +301,9 @@ namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
                     b.Navigation("ChildrenRoles");
                 });
 
-            modelBuilder.Entity("ZIT.Core.Entities.Member", b =>
+            modelBuilder.Entity("ZIT.Core.Entities.Department", b =>
                 {
-                    b.Navigation("Department");
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }

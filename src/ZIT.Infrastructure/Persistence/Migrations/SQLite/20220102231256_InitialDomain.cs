@@ -5,30 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
 {
-    public partial class SQLite_InitialDomain : Migration
+    public partial class InitialDomain : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Members",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    DepartmentId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Surname = table.Column<string>(type: "TEXT", nullable: true),
-                    PhotoAddress = table.Column<string>(type: "TEXT", nullable: true),
-                    Description = table.Column<string>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
-                    ModifiedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    ModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Members", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
@@ -110,30 +90,6 @@ namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
                 });
 
             migrationBuilder.CreateTable(
-                name: "Departments",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    CoordinatorId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    ImageAddress = table.Column<string>(type: "TEXT", nullable: true),
-                    Description = table.Column<string>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
-                    ModifiedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    ModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Departments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Departments_Members_CoordinatorId",
-                        column: x => x.CoordinatorId,
-                        principalTable: "Members",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ApplicationRoleApplicationUser",
                 columns: table => new
                 {
@@ -157,6 +113,51 @@ namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Departments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    CoordinatorId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    ImageAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Members",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    DepartmentId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Surname = table.Column<string>(type: "TEXT", nullable: true),
+                    PhotoAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
+                    ModifiedAt = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Members", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Members_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationRoleApplicationUser_UsersInRoleId",
                 table: "ApplicationRoleApplicationUser",
@@ -169,18 +170,31 @@ namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Members_DepartmentId",
+                table: "Members",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Roles_ParentRoleId",
                 table: "Roles",
                 column: "ParentRoleId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Departments_Members_CoordinatorId",
+                table: "Departments",
+                column: "CoordinatorId",
+                principalTable: "Members",
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ApplicationRoleApplicationUser");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Departments_Members_CoordinatorId",
+                table: "Departments");
 
             migrationBuilder.DropTable(
-                name: "Departments");
+                name: "ApplicationRoleApplicationUser");
 
             migrationBuilder.DropTable(
                 name: "Posts");
@@ -196,6 +210,9 @@ namespace ZIT.Infrastructure.Persistence.Migrations.SQLite
 
             migrationBuilder.DropTable(
                 name: "Members");
+
+            migrationBuilder.DropTable(
+                name: "Departments");
         }
     }
 }

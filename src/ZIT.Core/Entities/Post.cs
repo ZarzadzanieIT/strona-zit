@@ -13,7 +13,7 @@ public class Post : AuditableEntity
     protected Post()
     {
     }
-    public Post(string title, string slugTitle, string summary, string content, string[] tags)
+    public Post(string? title, string? slugTitle, string? summary, string? content, string[]? tags)
     {
         Title = title;
         SlugTitle = slugTitle;

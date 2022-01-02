@@ -13,7 +13,7 @@ public class SliderElement : AuditableEntity
         
     }
 
-    public SliderElement(string title, string imageAddress, string description)
+    public SliderElement(string? title, string? imageAddress, string? description)
     {
         Title = title;
         ImageAddress = imageAddress;
