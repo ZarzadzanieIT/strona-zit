@@ -26,6 +26,6 @@ public class New
         => new(title, slugTitle, summary, content, tags);
 
     public static SliderElement SliderElement(string? title = null, string? imageAddress = null,
-        string? description = null)
-        => new(title, imageAddress, description);
+        string? description = null, int position = 0)
+        => new(title, imageAddress, description, position);
 }
