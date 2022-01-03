@@ -9,15 +9,14 @@ using ZIT.Tests.Utils;
 
 namespace ZIT.IntegrationTests.Database;
 
-[Collection("SqliteCollection")]
-public class PostTests : IClassFixture<SqliteDbContextFixture>, IDisposable
+public class PostTests : IDisposable
 {
     private readonly SqliteDbContextFixture _sqlDbContextFixture;
     private readonly AppDbContext _context;
 
-    public PostTests(SqliteDbContextFixture sqlDbContextFixture)
+    public PostTests()
     {
-        _sqlDbContextFixture = sqlDbContextFixture;
+        _sqlDbContextFixture = new SqliteDbContextFixture();
         _context = _sqlDbContextFixture.AppDbContext;
     }
 
@@ -69,6 +68,6 @@ public class PostTests : IClassFixture<SqliteDbContextFixture>, IDisposable
 
     public void Dispose()
     {
-        _sqlDbContextFixture.ResetDatabase();
+        _sqlDbContextFixture.Dispose();
     }
 }

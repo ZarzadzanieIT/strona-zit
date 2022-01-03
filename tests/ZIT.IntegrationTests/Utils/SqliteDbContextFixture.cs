@@ -10,20 +10,32 @@ public class SqliteDbContextFixture : IDisposable
     public AppDbContext AppDbContext { get; }
     public SqliteDbContextFixture()
     {
-        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        var optionsBuilderProvider = Infrastructure.InfrastructureInstaller.GetDbContextOptions(DatabaseProvider.SQLite,
-            _ => "DataSource=tests.db;");
-
-        optionsBuilderProvider.Invoke(optionsBuilder);
-        AppDbContext = new AppDbContext(optionsBuilder.Options);
-
-        ResetDatabase();
+        AppDbContext = GetTestDbContext();
     }
 
     internal void ResetDatabase()
     {
-        AppDbContext.Database.EnsureDeleted();
-        AppDbContext.Database.EnsureCreated();
+        ResetDatabase(AppDbContext);
+    }
+
+    private static void ResetDatabase(DbContext context)
+    {
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+    }
+    internal static AppDbContext GetTestDbContext()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        var optionsBuilderProvider = Infrastructure.InfrastructureInstaller.GetDbContextOptions(DatabaseProvider.SQLite,
+            _ => $"DataSource={Guid.NewGuid()}.db;");
+
+        optionsBuilderProvider.Invoke(optionsBuilder);
+        var context = new AppDbContext(optionsBuilder.Options);
+
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+
+        return context;
     }
 
     public void Dispose()

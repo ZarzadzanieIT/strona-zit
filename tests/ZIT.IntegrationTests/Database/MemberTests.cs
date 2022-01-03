@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.Common;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -10,14 +9,13 @@ using ZIT.Tests.Utils;
 
 namespace ZIT.IntegrationTests.Database;
 
-[Collection("SqliteCollection")]
-public class MemberTests : IClassFixture<SqliteDbContextFixture>, IDisposable
+public class MemberTests : IDisposable
 {
     private readonly SqliteDbContextFixture _sqlDbContextFixture;
     private readonly AppDbContext _context;
-    public MemberTests(SqliteDbContextFixture sqlDbContextFixture)
+    public MemberTests()
     {
-        _sqlDbContextFixture = sqlDbContextFixture;
+        _sqlDbContextFixture = new SqliteDbContextFixture();
         _context = _sqlDbContextFixture.AppDbContext;
     }
 
@@ -40,6 +38,6 @@ public class MemberTests : IClassFixture<SqliteDbContextFixture>, IDisposable
 
     public void Dispose()
     {
-        _sqlDbContextFixture.ResetDatabase();
+        _sqlDbContextFixture.Dispose();
     }
 }

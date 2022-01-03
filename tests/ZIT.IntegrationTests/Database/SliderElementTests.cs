@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using ZIT.Infrastructure.Persistence;
@@ -12,14 +10,13 @@ using ZIT.Tests.Utils;
 
 namespace ZIT.IntegrationTests.Database;
 
-[Collection("SqliteCollection")]
-public class SliderElementTests : IClassFixture<SqliteDbContextFixture>, IDisposable
+public class SliderElementTests : IDisposable
 {
     private readonly SqliteDbContextFixture _sqlDbContextFixture;
     private readonly AppDbContext _context;
-    public SliderElementTests(SqliteDbContextFixture sqlDbContextFixture)
+    public SliderElementTests()
     {
-        _sqlDbContextFixture = sqlDbContextFixture;
+        _sqlDbContextFixture = new SqliteDbContextFixture();
         _context = _sqlDbContextFixture.AppDbContext;
     }
 
@@ -96,6 +93,6 @@ public class SliderElementTests : IClassFixture<SqliteDbContextFixture>, IDispos
 
     public void Dispose()
     {
-        _sqlDbContextFixture.ResetDatabase();
+        _sqlDbContextFixture.Dispose();
     }
 }
