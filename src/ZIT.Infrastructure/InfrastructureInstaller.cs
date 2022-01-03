@@ -30,18 +30,23 @@ public static class InfrastructureInstaller
     {
         var databaseOptions = configuration.Get<DatabaseOptions>();
 
+        return GetDbContextOptions(databaseOptions.DatabaseProvider, configuration.GetConnectionString);
+    }
+
+    internal static Action<DbContextOptionsBuilder> GetDbContextOptions(DatabaseProvider databaseProvider, Func<string, string> connectionStringProvider)
+    {
         return builder =>
         {
-            switch (databaseOptions.DatabaseProvider)
+            switch (databaseProvider)
             {
                 case DatabaseProvider.InMemory:
                     builder.UseInMemoryDatabase("ZIT");
                     break;
                 case DatabaseProvider.SQLite:
-                    builder.UseSqlite(configuration.GetConnectionString("SQLite"));
+                    builder.UseSqlite(connectionStringProvider("SQLite"));
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(databaseOptions), databaseOptions,
+                    throw new ArgumentOutOfRangeException(nameof(databaseProvider), databaseProvider,
                         "Unknown database provider");
             }
         };
