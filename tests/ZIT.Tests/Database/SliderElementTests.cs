@@ -5,10 +5,9 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using ZIT.Infrastructure.Persistence;
-using ZIT.IntegrationTests.Utils;
 using ZIT.Tests.Utils;
 
-namespace ZIT.IntegrationTests.Database;
+namespace ZIT.Tests.Database;
 
 public class SliderElementTests : IDisposable
 {
@@ -41,7 +40,7 @@ public class SliderElementTests : IDisposable
     public async Task Add_MultipleElements_WhenDifferentPositions_ShouldAddToDatabase()
     {
         // Arrange
-        var sliderElements = Enumerable.Range(0, 5).Select(x => New.SliderElement(title: $"Title{x}" ,position: x)).ToList();
+        var sliderElements = Enumerable.Range(0, 5).Select(x => New.SliderElement(title: $"Title{x}", position: x)).ToList();
 
 
         // Act
@@ -58,7 +57,7 @@ public class SliderElementTests : IDisposable
     {
         // Arrange
         var sliderElement = New.SliderElement(position: -1);
-        
+
 
         Func<Task> func = async () =>
         {

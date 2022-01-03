@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ZIT.Infrastructure.Options;
 using ZIT.Infrastructure.Persistence;
 
-namespace ZIT.IntegrationTests.Utils;
+namespace ZIT.Tests.Utils;
 
 public class SqliteDbContextFixture : IDisposable
 {

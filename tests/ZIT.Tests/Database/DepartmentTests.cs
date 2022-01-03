@@ -4,10 +4,9 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using ZIT.Infrastructure.Persistence;
-using ZIT.IntegrationTests.Utils;
 using ZIT.Tests.Utils;
 
-namespace ZIT.IntegrationTests.Database;
+namespace ZIT.Tests.Database;
 
 public class DepartmentTests : IDisposable
 {
