@@ -9,6 +9,10 @@ public class AppDbContext : DbContext
 {
     public DbSet<ApplicationRole> Roles { get; set; }
     public DbSet<ApplicationUser> Users { get; set; }
+    public DbSet<Department> Departments { get; set; }
+    public DbSet<Member> Members { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<SliderElement> SliderElements { get; set; }
 
 #pragma warning disable CS8618
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
