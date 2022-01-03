@@ -27,4 +27,10 @@
 	  <Folder Include="Persistence\Migrations\SQLite\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>ZIT.IntegrationTests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
 </Project>
