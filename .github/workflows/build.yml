@@ -18,3 +18,5 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore  /p:ContinuousIntegrationBuild=true
+      - name: Run tests
+        run: dotnet test
