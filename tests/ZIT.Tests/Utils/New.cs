@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ZIT.Core.Entities;
 
 namespace ZIT.Tests.Utils;
@@ -26,6 +27,9 @@ public class New
         => new(title, slugTitle, summary, content, tags);
 
     public static SliderElement SliderElement(string? title = null, string? imageAddress = null,
-        string? description = null, int position = 0)
-        => new(title, imageAddress, description, position);
+        string? description = null, int position = 0) =>
+        new(title, imageAddress, description, position)
+        {
+            Id = Guid.NewGuid()
+        };
 }
